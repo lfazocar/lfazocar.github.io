@@ -1,0 +1,17 @@
+---
+const { project, info_url } = Astro.props;
+---
+<article style="margin: auto;">
+  <header>
+    <hgroup style="margin-bottom: 0">
+      <h2>{project.name}</h2>
+      <p>URL: <a href={'https://' + project.url}>{project.url}</a></p>
+    </hgroup>
+  </header>
+  <p>{project.description}</p>
+  <p><small>Tags: {project.tags.map((tag, idx) => <span>{idx != project.tags.length - 1 ? <span><a href={'tag/' + tag}>{tag}</a>, </span> : <a href={'tag/' + tag}>{tag}</a>}</span>)}</small></p>
+  <img src={project.image.url} alt={project.image.alt}>
+  <footer>
+    <a href={info_url}>Más Info</a>
+  </footer>
+</article>

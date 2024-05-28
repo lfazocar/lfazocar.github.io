@@ -1,13 +1,9 @@
 ---
 import Page from "../layouts/Page.astro"
+import ProjectCard from "../components/ProjectCard.astro"
+const allProjects = await Astro.glob('../pages/projects/*.md')
 ---
-
 <Page pageTitle="Projects">
 	<h1>Projects</h1>
-	<h2>This will be a list of projects</h2>
-	<ul>
-		<li>This will be a project component</li>
-		<li>This will be a project component</li>
-		<li>This will be a project component</li>
-	</ul>
+	<div class="grid">{allProjects.map((project) => <ProjectCard project={project.frontmatter} info_url={project.url} />)}</div>
 </Page>
