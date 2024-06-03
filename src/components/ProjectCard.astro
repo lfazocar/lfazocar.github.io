@@ -1,17 +1,45 @@
 ---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
 const { project, info_url } = Astro.props;
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/projects/*.{jpeg,jpg,png,gif,svg}');
+if (!images[project.image.url]) throw new Error(`"${project.image.url}" does not exist in glob: "src/assets/*.{jpeg,jpg,png,gif}"`);
 ---
-<article style="margin: auto;">
+<article>
   <header>
-    <hgroup style="margin-bottom: 0">
-      <h2>{project.name}</h2>
-      <p>URL: <a href={'https://' + project.url}>{project.url}</a></p>
-    </hgroup>
+    <h2>{project.name}</h2>
+    { project.github &&
+      <p><a href={project.github} target="_blank">Github Repository</a></p>
+    }
   </header>
   <p>{project.description}</p>
-  <p><small>Tags: {project.tags.map((tag, idx) => <span>{idx != project.tags.length - 1 ? <span><a href={'tag/' + tag}>{tag}</a>, </span> : <a href={'tag/' + tag}>{tag}</a>}</span>)}</small></p>
-  <img src={project.image.url} alt={project.image.alt}>
+  { project.tags &&
+    <p><small>Tags: { project.tags.map((tag, idx) =>
+      <span>{idx != project.tags.length - 1 ?
+        <span><a href={'tag/' + tag}>{tag}</a>, </span> :
+        <a href={'tag/' + tag}>{tag}</a>}
+      </span>
+    )}</small></p>
+  }
+  { project.url &&
+    <p>URL: <a href={project.url} target="_blank">{project.url}</a></p>
+  }
+  <a href={project.url} target="_blank">
+    <Image src={images[project.image.url]()} alt={project.image.alt} />
+  </a>
   <footer>
     <a href={info_url}>Más Info</a>
   </footer>
 </article>
+<style>
+  article {
+    margin: auto;
+  }
+  header > * {
+    margin-bottom: 0px;
+  }
+  img {
+    border-radius: 10px;
+  }
+</style>

@@ -1,10 +1,11 @@
 ---
 layout: ../../layouts/ProjectLayout.astro
 name: 'Project name'
-url: 'www.example.com'
+url: 'https://www.example.com'
+github: 'https://www.example.com'
 description: 'This is a description'
 image:
-    url: 'https://placehold.co/600x400'
+    url: '/src/images/projects/pusheen-code.gif'
     alt: 'placeholder image'
 tags: ["lorem", "ipsum"]
 ---

@@ -1,3 +1,62 @@
+---
+import { Image } from 'astro:assets';
+import githubLogo from '../images/github-icon.png';
+import linkedinLogo from '../images/linkedin-icon.png';
+import astroLogo from '../images/astro-icon.png';
+import picoLogo from '../images/pico-css-icon.png';
+---
 <footer class="container">
-  <p>This is a footer</p>
+  <div class="social">
+    <p>Contact me:</p>
+    <a href="https://github.com/lfazocar" target="_blank">
+      <Image src={githubLogo} alt="Github" />
+    </a>
+    <a href="https://www.linkedin.com/in/luis-felipe-az%C3%B3car-dr%C3%A1pela" target="_blank">
+      <Image src={linkedinLogo} alt="LinkedIn" />
+    </a>
+  </div>
+  <div class="made-with">
+    <p>Made with</p>
+    <div>
+      <a href="https://astro.build/" target="_blank">
+        <Image src={astroLogo} alt="Astro" />
+      </a>
+      <a href="https://picocss.com/" target="_blank" >
+        <Image src={picoLogo} alt="PicoCSS" />
+      </a>
+    </div>
+  </div>
 </footer>
+<style>
+  footer {
+    display: flex;
+  }
+  footer p {
+    margin: 0;
+  }
+  .social {
+    flex-grow: 1;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+  }
+  .social img {
+    width: 3em;
+    margin: 0 10px;
+  }
+  .made-with {
+    align-self: end;
+  }
+  .made-with > div {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .made-with img {
+    width: 1em;
+  }
+  .made-with p {
+    text-align: center;
+    font-size: x-small;
+    width: auto;
+  }
+</style>
