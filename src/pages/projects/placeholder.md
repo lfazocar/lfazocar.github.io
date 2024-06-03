@@ -1,13 +1,14 @@
 ---
 layout: ../../layouts/ProjectLayout.astro
 name: 'Project name'
-url: 'https://www.example.com'
+address: 'https://www.example.com'
 github: 'https://www.example.com'
 description: 'This is a description'
 image:
     url: '/src/images/projects/pusheen-code.gif'
-    alt: 'placeholder image'
+    alt: 'placeholder'
 tags: ["lorem", "ipsum"]
+order: -1
 ---
 # This is a project
 

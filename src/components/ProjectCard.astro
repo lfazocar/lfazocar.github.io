@@ -4,7 +4,6 @@ import { Image } from 'astro:assets';
 
 const { project, info_url } = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/projects/*.{jpeg,jpg,png,gif,svg}');
-if (!images[project.image.url]) throw new Error(`"${project.image.url}" does not exist in glob: "src/assets/*.{jpeg,jpg,png,gif}"`);
 ---
 <article>
   <header>
@@ -12,25 +11,38 @@ if (!images[project.image.url]) throw new Error(`"${project.image.url}" does not
     { project.github &&
       <p><a href={project.github} target="_blank">Github Repository</a></p>
     }
+    { project.tags &&
+      <p><small>Tags: { project.tags.join(', ') }</small></p>
+    }
+    <!-- { project.tags &&
+      <p><small>Tags: { project.tags.map((tag, idx) =>
+        <span>{
+          idx != project.tags.length - 1 ?
+            <span><a href={'tag/' + tag}>{tag}</a>, </span>
+            :
+            <a href={'tag/' + tag}>{tag}</a>
+        }</span>
+      )}</small></p>
+    } -->
   </header>
   <p>{project.description}</p>
-  { project.tags &&
-    <p><small>Tags: { project.tags.map((tag, idx) =>
-      <span>{idx != project.tags.length - 1 ?
-        <span><a href={'tag/' + tag}>{tag}</a>, </span> :
-        <a href={'tag/' + tag}>{tag}</a>}
-      </span>
-    )}</small></p>
+  <a href={info_url} role="button" class="button">Click for more details</a>
+  { project.url && project.image &&
+    <a href={project.url} target="_blank">
+      <Image src={images[project.image.url]()} alt={project.image.alt} />
+    </a>
+    <footer>
+      URL: <a href={project.url} target="_blank">{project.url}</a>
+    </footer>
   }
-  { project.url &&
-    <p>URL: <a href={project.url} target="_blank">{project.url}</a></p>
-  }
-  <a href={project.url} target="_blank">
+  { !project.url && project.image &&
     <Image src={images[project.image.url]()} alt={project.image.alt} />
-  </a>
-  <footer>
-    <a href={info_url}>Más Info</a>
-  </footer>
+  }
+  { project.url && !project.image &&
+    <footer>
+      URL: <a href={project.url} target="_blank">{project.url}</a>
+    </footer>
+  }
 </article>
 <style>
   article {
@@ -41,5 +53,11 @@ if (!images[project.image.url]) throw new Error(`"${project.image.url}" does not
   }
   img {
     border-radius: 10px;
+  }
+  .button {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 1em;
+    padding: 0.5em;
   }
 </style>
