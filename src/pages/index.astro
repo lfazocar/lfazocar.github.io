@@ -1,9 +1,74 @@
 ---
 import Page from "../layouts/Page.astro"
+import { Image } from 'astro:assets';
+import rubyLogo from '../images/ruby-icon.png';
+import jsLogo from '../images/js-icon.png'
 ---
-<Page pageTitle="Index">
-	<h1>Index</h1>
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Augue neque gravida in fermentum et sollicitudin ac. Aliquam nulla facilisi cras fermentum odio. Nisl suscipit adipiscing bibendum est ultricies integer quis auctor elit. Neque egestas congue quisque egestas diam in arcu cursus euismod. Mauris ultrices eros in cursus turpis. Nullam non nisi est sit. Scelerisque fermentum dui faucibus in ornare quam. Sed id semper risus in hendrerit gravida rutrum quisque non. Gravida in fermentum et sollicitudin. Dictum at tempor commodo ullamcorper a lacus. Ullamcorper morbi tincidunt ornare massa eget egestas purus viverra accumsan. Orci ac auctor augue mauris augue. Fringilla est ullamcorper eget nulla. Etiam sit amet nisl purus in mollis nunc sed. Molestie a iaculis at erat. Varius quam quisque id diam vel quam elementum pulvinar. Nullam vehicula ipsum a arcu cursus vitae. Vitae congue eu consequat ac felis donec et odio pellentesque. Gravida arcu ac tortor dignissim convallis aenean.
-	</p>
+<Page pageTitle="Hello! I'm Felipe!">
+	<hgroup>
+		<p>Hello!</p>
+		<h1>I'm Felipe!</h1>
+		<h2>Back-end Developer from Chile 🇨🇱</h2>
+	</hgroup>
+	<Image src={rubyLogo} alt="Ruby" loading="eager" />
+	<Image src={jsLogo} alt="JavaScript" loading="eager" />
+	<div class="grid">
+		<div>
+			<h3>I've built the backend of web applications with</h3>
+			<ul>
+				<li>Rails</li>
+				<li>Node.js</li>
+				<li>Express.js</li>
+				<li>Postgres</li>
+				<li>Sequelize</li>
+			</ul>
+		</div>
+		<div>
+			<h3>Some tools I use are</h3>
+			<ul>
+				<li>Linux</li>
+				<li>Docker</li>
+				<li>Git & GitHub</li>
+				<li>Postman</li>
+			</ul>
+		</div>
+		<div>
+			<h3>I've deployed projects with</h3>
+			<ul>
+				<li>Amazon Web Services</li>
+				<li>Render</li>
+				<li>Heroku</li>
+				<li>Netlify</li>
+				<li>GitHub Pages</li>
+			</ul>
+		</div>
+		<div>
+			<h3>I've also created the frontend of small web projects <small>(like this one)</small> with</h3>
+			<ul>
+				<li>Astro</li>
+				<li>Pico CSS</li>
+				<li>Vue 3</li>
+				<li>Bootstrap</li>
+			</ul>
+		</div>
+	</div>
+	<h>You can learn more by checking out my <a href="/projects">projects</a>!</h>
 </Page>
+<style>
+	img {
+		width: 3em;
+	}
+	.grid {
+		margin-top: 1em;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+		gap: 1em;
+		grid-auto-flow: dense;
+	}
+
+	@media (max-width: 576px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

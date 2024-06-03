@@ -2,7 +2,7 @@
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 
-const { project, info_url } = Astro.props;
+const { project, details } = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/projects/*.{jpeg,jpg,png,gif,svg}');
 ---
 <article>
@@ -26,33 +26,36 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/project
     } -->
   </header>
   <p>{project.description}</p>
-  <a href={info_url} role="button" class="button">Click for more details</a>
-  { project.url && project.image &&
-    <a href={project.url} target="_blank">
+  <a href={details} role="button" class="button">Click for more details</a>
+  { project.address && project.image &&
+    <a href={project.address} target="_blank">
       <Image src={images[project.image.url]()} alt={project.image.alt} />
     </a>
     <footer>
-      URL: <a href={project.url} target="_blank">{project.url}</a>
+      URL: <a href={project.address} target="_blank">{project.address}</a>
     </footer>
   }
-  { !project.url && project.image &&
+  { !project.address && project.image &&
     <Image src={images[project.image.url]()} alt={project.image.alt} />
   }
-  { project.url && !project.image &&
+  { project.address && !project.image &&
     <footer>
-      URL: <a href={project.url} target="_blank">{project.url}</a>
+      URL: <a href={project.address} target="_blank">{project.address}</a>
     </footer>
   }
 </article>
 <style>
   article {
     margin: auto;
+    width: 100%;
   }
   header > * {
     margin-bottom: 0px;
   }
   img {
     border-radius: 10px;
+    display: block;
+    margin: auto;
   }
   .button {
     display: block;

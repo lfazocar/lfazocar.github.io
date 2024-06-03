@@ -8,14 +8,22 @@ allProjects.sort((a, b) => a.frontmatter.order - b.frontmatter.order);
 	<h1>Projects</h1>
 	<div class="grid">
 		{ allProjects.map((project) =>
-			<ProjectCard project={project.frontmatter} info_url={project.url} />
+			<ProjectCard project={project.frontmatter} details={project.url} />
 		)}
-		</div>
+	</div>
 </Page>
 <style>
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+		grid-template-rows: 1fr;
 		gap: 1em;
+		grid-auto-flow: dense;
+	}
+
+	@media (max-width: 576px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
