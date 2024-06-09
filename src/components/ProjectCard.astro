@@ -8,10 +8,12 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/project
 <article>
   <header>
     <h2>{project.name}</h2>
-    { project.github &&
+    {
+      project.github &&
       <p><a href={project.github} target="_blank">Github Repository</a></p>
     }
-    { project.tags &&
+    {
+      project.tags &&
       <p><small>Tags: { project.tags.join(', ') }</small></p>
     }
     <!-- { project.tags &&
@@ -27,21 +29,19 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/project
   </header>
   <p>{project.description}</p>
   <a href={details} role="button" class="button">Click for more details</a>
-  { project.address && project.image &&
-    <a href={project.address} target="_blank">
+  {
+    project.image && project.address ?
+      <a href={project.address} target="_blank">
+        <Image src={images[project.image.url]()} alt={project.image.alt} />
+      </a>
+    : project.image &&
       <Image src={images[project.image.url]()} alt={project.image.alt} />
-    </a>
-    <footer>
-      URL: <a href={project.address} target="_blank">{project.address}</a>
-    </footer>
   }
-  { !project.address && project.image &&
-    <Image src={images[project.image.url]()} alt={project.image.alt} />
-  }
-  { project.address && !project.image &&
-    <footer>
-      URL: <a href={project.address} target="_blank">{project.address}</a>
-    </footer>
+  {
+    project.address &&
+      <footer>
+        URL: <a href={project.address} target="_blank">{project.address}</a>
+      </footer>
   }
 </article>
 <style>

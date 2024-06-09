@@ -9,17 +9,24 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/project
 ---
 <Page pageTitle={frontmatter.name}>
   <h1>{frontmatter.name}</h1>
-  { frontmatter.image &&
-    <Image src={images[frontmatter.image.url]()} alt={frontmatter.image.alt} />
+  {
+    frontmatter.image && frontmatter.address ?
+      <a href={frontmatter.address} target="_blank">
+        <Image src={images[frontmatter.image.url]()} alt={frontmatter.image.alt} loading="eager" />
+      </a>
+    : frontmatter.image &&
+      <Image src={images[frontmatter.image.url]()} alt={frontmatter.image.alt} loading="eager" />
   }
   <blockquote>{frontmatter.description}</blockquote>
   <a href="/projects" role="button">&lt; Go back</a>
   <slot />
-  { frontmatter.github &&
-    <p><a href={frontmatter.github} target="_blank">Github Repository</a></p>
+  {
+    frontmatter.github &&
+      <p><a href={frontmatter.github} target="_blank">Github Repository</a></p>
   }
-  { frontmatter.address &&
-    <p>URL: <a href={frontmatter.address} target="_blank">{frontmatter.address}</a></p>
+  {
+    frontmatter.address &&
+      <p>URL: <a href={frontmatter.address} target="_blank">{frontmatter.address}</a></p>
   }
 </Page>
 <style>
