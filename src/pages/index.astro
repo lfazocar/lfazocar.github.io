@@ -1,6 +1,7 @@
 ---
 import Page from "../layouts/Page.astro"
 import { Image } from 'astro:assets';
+import pythonLogo from '../images/python-icon.png';
 import rubyLogo from '../images/ruby-icon.png';
 import jsLogo from '../images/js-icon.png'
 ---
@@ -8,28 +9,28 @@ import jsLogo from '../images/js-icon.png'
 	<hgroup>
 		<p>Hello!</p>
 		<h1>I'm Felipe!</h1>
-		<h2>Back-end Developer from Chile 🇨🇱</h2>
+		<h2>Full-stack Developer from Chile 🇨🇱</h2>
 	</hgroup>
+	<Image src={pythonLogo} alt="Python" loading="eager" />
 	<Image src={rubyLogo} alt="Ruby" loading="eager" />
 	<Image src={jsLogo} alt="JavaScript" loading="eager" />
 	<div class="grid">
 		<div>
 			<h3>I've built the backend of web applications with</h3>
 			<ul>
-				<li>Rails</li>
-				<li>Node.js</li>
-				<li>Express.js</li>
-				<li>PostgreSQL</li>
-				<li>Sequelize</li>
+				<li>Python (Django and Flask)</li>
+				<li>Ruby (Ruby on Rails)</li>
+				<li>Javascript (Node.js)</li>
+				<li>SQL Databases (PostgreSQL)</li>
 			</ul>
 		</div>
 		<div>
-			<h3>Some tools I use are</h3>
+			<h3>I've created the frontend of small web projects with</h3>
 			<ul>
-				<li>Linux</li>
-				<li>Docker</li>
-				<li>Git & GitHub</li>
-				<li>Postman</li>
+				<li>Astro</li>
+				<li>Pico CSS</li>
+				<li>Vue 3</li>
+				<li>Bootstrap</li>
 			</ul>
 		</div>
 		<div>
@@ -43,12 +44,12 @@ import jsLogo from '../images/js-icon.png'
 			</ul>
 		</div>
 		<div>
-			<h3>I've also created the frontend of small web projects <small>(like this one)</small> with</h3>
+			<h3>Some tools I use are</h3>
 			<ul>
-				<li>Astro</li>
-				<li>Pico CSS</li>
-				<li>Vue 3</li>
-				<li>Bootstrap</li>
+				<li>Linux</li>
+				<li>Docker</li>
+				<li>Git & GitHub</li>
+				<li>Postman</li>
 			</ul>
 		</div>
 	</div>

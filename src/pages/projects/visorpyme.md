@@ -10,7 +10,6 @@ image:
 tags: ["backend", "express", "node"]
 order: 1
 ---
-# VisorPyme
 
 ## Technical details
 
