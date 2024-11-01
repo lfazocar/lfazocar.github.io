@@ -1,15 +1,18 @@
 ---
-import Page from "../layouts/Page.astro"
-import ProjectCard from "../components/ProjectCard.astro"
-const allProjects = await Astro.glob('../pages/projects/*.md')
+import Page from "../layouts/Page.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+const allProjects = await Astro.glob("../pages/projects/*.md");
 allProjects.sort((a, b) => a.frontmatter.order - b.frontmatter.order);
 ---
+
 <Page pageTitle="Projects">
 	<h1>Projects</h1>
 	<div class="grid">
-		{ allProjects.map((project) =>
-			<ProjectCard project={project.frontmatter} details={project.url} />
-		)}
+		{
+			allProjects.map((project) => (
+				<ProjectCard project={project.frontmatter} details={project.url} />
+			))
+		}
 	</div>
 </Page>
 <style>
