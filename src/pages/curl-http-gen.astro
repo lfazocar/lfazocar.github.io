@@ -25,16 +25,30 @@ import Page from "../layouts/Page.astro";
       <div id="headers">
         <input placeholder="Header-Name: Value" />
       </div>
-      <button type="button" class="secondary" id="add-header" disabled>Add header</button>
+      <button type="button" class="secondary" id="add-header" disabled
+        >Add header</button
+      >
+      <fieldset>
+        <input type="checkbox" id="newline" checked />
+        <label for="newline">Newline?</label>
+        <input type="checkbox" id="status" checked />
+        <label for="status">Status code?</label>
+      </fieldset>
       <label for="data">
         Body
-        <textarea id="data" placeholder="This method shouldn't have a body" disabled></textarea>
+        <textarea
+          id="data"
+          placeholder="This method shouldn't have a body"
+          disabled></textarea>
       </label>
       <button type="submit">Generate cURL command</button>
     </form>
     <div class="command">
       <h3>Generated cURL command</h3>
-      <textarea id="command" placeholder="Your generated cURL command will appear here!" readonly></textarea>
+      <textarea
+        id="command"
+        placeholder="Your generated cURL command will appear here!"
+        readonly></textarea>
       <button id="to-clipboard">Copy to clipboard</button>
     </div>
   </div>
@@ -48,66 +62,83 @@ import Page from "../layouts/Page.astro";
     headers.addEventListener("input", (event) => {
       if (event.target.tagName === "INPUT") {
         const inputs = Array.from(headers.querySelectorAll("input"));
-        const anyEmpty = inputs.some(input => input.value.trim() === "");
+        const anyEmpty = inputs.some((input) => input.value.trim() === "");
         if (anyEmpty) {
           document.getElementById("add-header").setAttribute("disabled", "");
         } else {
           document.getElementById("add-header").removeAttribute("disabled");
         }
       }
-    })
+    });
 
     // Disable data input if the method shouldn't have a body
     selectMethod.addEventListener("change", (event) => {
       const method = document.getElementById("method").value;
-      if (
-        method === "POST" ||
-        method === "PUT" ||
-        method === "PATCH"
-      ) {
+      if (method === "POST" || method === "PUT" || method === "PATCH") {
         data.removeAttribute("disabled");
         data.placeholder = '{\n  "request":"body"\n}';
       } else {
         data.setAttribute("disabled", "");
         data.placeholder = "This method shouldn't have a body";
       }
-    })
+    });
 
     // "Add Header" button
-    document.getElementById("add-header").addEventListener("click", function(event) {
-      const newHeaderInput = document.createElement("input");
-      newHeaderInput.placeholder = "Header-Name: Value";
-      headers.appendChild(newHeaderInput);
-      document.getElementById("add-header").setAttribute("disabled", "");
-    });
+    document
+      .getElementById("add-header")
+      .addEventListener("click", function (event) {
+        const newHeaderInput = document.createElement("input");
+        newHeaderInput.placeholder = "Header-Name: Value";
+        headers.appendChild(newHeaderInput);
+        document.getElementById("add-header").setAttribute("disabled", "");
+      });
 
     // Generate cURL command
-    document.getElementById("curl-http-gen").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const method = document.getElementById("method").value;
-      const url = document.getElementById("url").value;
-      const headerValues = Array.from(headers.querySelectorAll("input"), input => input.value)
-        .filter(value => value !== "");
+    document
+      .getElementById("curl-http-gen")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        const method = document.getElementById("method").value;
+        const url = document.getElementById("url").value;
+        const headerValues = Array.from(
+          headers.querySelectorAll("input"),
+          (input) => input.value,
+        ).filter((value) => value !== "");
+        const status = document.getElementById("status").checked;
+        const newline = document.getElementById("newline").checked;
 
-      let generated_command = "curl";
-      if (method !== "GET") generated_command += " -X " + method;
-      generated_command += " " + url;
-      headerValues.forEach( (header) => { generated_command += ` \\\n -H "${header}"` });
-      if (!data.hasAttribute("disabled")) { generated_command += ` \\\n -d "${data.value}"` };
+        let generated_command = "curl";
+        if (method !== "GET") generated_command += " -X " + method;
+        generated_command += " " + url;
+        headerValues.forEach((header) => {
+          generated_command += ` \\\n -H "${header}"`;
+        });
+        if (!data.hasAttribute("disabled") && data.value) {
+          generated_command += ` \\\n -d "${data.value}"`;
+        }
+        if (newline || status) {
+          generated_command += ' \\\n -w "';
+          if (status) generated_command += "\\n %{http_code}";
+          if (newline) generated_command += "\\n";
+          generated_command += '"';
+        }
 
-      command.value = generated_command + '\\\n -w "\\n"';
-    });
+        command.value = generated_command;
+      });
 
     // Copy cURL command to clipboard
-    document.getElementById("to-clipboard").addEventListener("click", function(event) {
-      navigator.clipboard.writeText(command.value)
-      .then(() => {
-        alert(`cURL command copied to the clipboard:\n${command.value}`);
-      })
-      .catch(err => {
-        alert("Failed to copy to clipboard: ", err);
+    document
+      .getElementById("to-clipboard")
+      .addEventListener("click", function (event) {
+        navigator.clipboard
+          .writeText(command.value)
+          .then(() => {
+            alert(`cURL command copied to the clipboard:\n${command.value}`);
+          })
+          .catch((err) => {
+            alert("Failed to copy to clipboard: ", err);
+          });
       });
-    });
   </script>
   <style>
     .grid {
@@ -123,7 +154,7 @@ import Page from "../layouts/Page.astro";
         grid-template-columns: 1fr;
       }
     }
-    
+
     #curl-http-gen > button:last-child {
       margin-bottom: 0;
     }
@@ -131,7 +162,7 @@ import Page from "../layouts/Page.astro";
     #add-header {
       width: 100%;
     }
-    
+
     .command {
       display: flex;
       flex-direction: column;
