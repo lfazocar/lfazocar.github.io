@@ -1,0 +1,149 @@
+---
+import Page from "../layouts/Page.astro";
+---
+
+<Page pageTitle="Hello! I'm Felipe!">
+  <h1>cURL HTTP command generator</h1>
+  <div class="grid">
+    <form id="curl-http-gen">
+      <fieldset>
+        <legend>Method and URL</legend>
+        <div role="group">
+          <select id="method" required>
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>PATCH</option>
+            <option>DELETE</option>
+            <option>HEAD</option>
+            <option>OPTIONS</option>
+          </select>
+          <input type="url" id="url" value="https://" />
+        </div>
+      </fieldset>
+      <label for="headers">Headers</label>
+      <div id="headers">
+        <input placeholder="Header-Name: Value" />
+      </div>
+      <button type="button" class="secondary" id="add-header" disabled>Add header</button>
+      <label for="data">
+        Body
+        <textarea id="data" placeholder="This method shouldn't have a body" disabled></textarea>
+      </label>
+      <button type="submit">Generate cURL command</button>
+    </form>
+    <div class="command">
+      <h3>Generated cURL command</h3>
+      <textarea id="command" placeholder="Your generated cURL command will appear here!" readonly></textarea>
+      <button id="to-clipboard">Copy to clipboard</button>
+    </div>
+  </div>
+  <script>
+    const headers = document.getElementById("headers");
+    const selectMethod = document.getElementById("method");
+    const data = document.getElementById("data");
+    const command = document.getElementById("command");
+
+    // Disable add header button if there's an empty header input
+    headers.addEventListener("input", (event) => {
+      if (event.target.tagName === "INPUT") {
+        const inputs = Array.from(headers.querySelectorAll("input"));
+        const anyEmpty = inputs.some(input => input.value.trim() === "");
+        if (anyEmpty) {
+          document.getElementById("add-header").setAttribute("disabled", "");
+        } else {
+          document.getElementById("add-header").removeAttribute("disabled");
+        }
+      }
+    })
+
+    // Disable data input if the method shouldn't have a body
+    selectMethod.addEventListener("change", (event) => {
+      const method = document.getElementById("method").value;
+      if (
+        method === "POST" ||
+        method === "PUT" ||
+        method === "PATCH"
+      ) {
+        data.removeAttribute("disabled");
+        data.placeholder = '{\n  "request":"body"\n}';
+      } else {
+        data.setAttribute("disabled", "");
+        data.placeholder = "This method shouldn't have a body";
+      }
+    })
+
+    // "Add Header" button
+    document.getElementById("add-header").addEventListener("click", function(event) {
+      const newHeaderInput = document.createElement("input");
+      newHeaderInput.placeholder = "Header-Name: Value";
+      headers.appendChild(newHeaderInput);
+      document.getElementById("add-header").setAttribute("disabled", "");
+    });
+
+    // Generate cURL command
+    document.getElementById("curl-http-gen").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const method = document.getElementById("method").value;
+      const url = document.getElementById("url").value;
+      const headerValues = Array.from(headers.querySelectorAll("input"), input => input.value)
+        .filter(value => value !== "");
+
+      let generated_command = "curl";
+      if (method !== "GET") generated_command += " -X " + method;
+      generated_command += " " + url;
+      headerValues.forEach( (header) => { generated_command += ` \\\n -H "${header}"` });
+      if (!data.hasAttribute("disabled")) { generated_command += ` \\\n -d "${data.value}"` };
+
+      command.value = generated_command + '\\\n -w "\\n"';
+    });
+
+    // Copy cURL command to clipboard
+    document.getElementById("to-clipboard").addEventListener("click", function(event) {
+      navigator.clipboard.writeText(command.value)
+      .then(() => {
+        alert(`cURL command copied to the clipboard:\n${command.value}`);
+      })
+      .catch(err => {
+        alert("Failed to copy to clipboard: ", err);
+      });
+    });
+  </script>
+  <style>
+    .grid {
+      margin-top: 1em;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+      gap: 1em;
+      grid-auto-flow: dense;
+    }
+
+    @media (max-width: 576px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    #curl-http-gen > button:last-child {
+      margin-bottom: 0;
+    }
+
+    #add-header {
+      width: 100%;
+    }
+    
+    .command {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #command {
+      resize: none;
+      flex-grow: 1;
+    }
+
+    textarea {
+      font-family: monospace;
+    }
+  </style></Page
+>
