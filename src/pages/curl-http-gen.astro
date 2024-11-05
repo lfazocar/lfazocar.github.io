@@ -39,6 +39,7 @@ import Page from "../layouts/Page.astro";
         <textarea
           id="data"
           placeholder="This method shouldn't have a body"
+          rows="3"
           disabled></textarea>
       </label>
       <button type="submit">Generate cURL command</button>
@@ -48,6 +49,7 @@ import Page from "../layouts/Page.astro";
       <textarea
         id="command"
         placeholder="Your generated cURL command will appear here!"
+        rows="3"
         readonly></textarea>
       <button id="to-clipboard">Copy to clipboard</button>
     </div>
@@ -81,6 +83,13 @@ import Page from "../layouts/Page.astro";
         data.setAttribute("disabled", "");
         data.placeholder = "This method shouldn't have a body";
       }
+    });
+
+    // Dynamic textarea resizing
+    data.addEventListener("input", (event) => {
+      const textbox = event.target;
+      textbox.style.height = "auto";
+      textbox.style.height = textbox.scrollHeight + "px";
     });
 
     // "Add Header" button
@@ -124,6 +133,8 @@ import Page from "../layouts/Page.astro";
         }
 
         command.value = generated_command;
+        command.style.height = "auto";
+        command.style.height = command.scrollHeight + "px";
       });
 
     // Copy cURL command to clipboard
@@ -155,25 +166,21 @@ import Page from "../layouts/Page.astro";
       }
     }
 
-    #curl-http-gen > button:last-child {
+    fieldset > div {
       margin-bottom: 0;
     }
 
-    #add-header {
+    #method {
+      width: fit-content;
+    }
+
+    button {
       width: 100%;
     }
 
-    .command {
-      display: flex;
-      flex-direction: column;
-    }
-
-    #command {
-      resize: none;
-      flex-grow: 1;
-    }
-
     textarea {
+      overflow-y: hidden;
+      resize: none;
       font-family: monospace;
     }
   </style></Page
