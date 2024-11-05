@@ -51,7 +51,7 @@ import Page from "../layouts/Page.astro";
         placeholder="Your generated cURL command will appear here!"
         rows="3"
         readonly></textarea>
-      <button id="to-clipboard">Copy to clipboard</button>
+      <button id="to-clipboard" disabled>Copy to clipboard</button>
     </div>
   </div>
   <script>
@@ -135,6 +135,7 @@ import Page from "../layouts/Page.astro";
         command.value = generated_command;
         command.style.height = "auto";
         command.style.height = command.scrollHeight + "px";
+        document.getElementById("to-clipboard").removeAttribute("disabled");
       });
 
     // Copy cURL command to clipboard
