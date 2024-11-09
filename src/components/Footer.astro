@@ -1,16 +1,20 @@
 ---
 import { Image } from "astro:assets";
-import githubLogo from "../images/github-icon.png";
 import linkedinLogo from "../images/linkedin-icon.png";
-import astroLogo from "../images/astro-icon.png";
-import picoLogo from "../images/pico-css-icon.png";
+import githubLogoDark from "../images/github-icon-dark.png";
+import astroLogoDark from "../images/astro-icon-dark.png";
+import picoLogoDark from "../images/pico-icon-dark.png";
+import githubLogoLight from "../images/github-icon-light.png";
+import astroLogoLight from "../images/astro-icon-light.png";
+import picoLogoLight from "../images/pico-icon-light.png";
 ---
 
-<footer class="container">
+<footer class="container" transition:persist transition:animate="fade">
   <div class="social">
     <p>Contact me:</p>
     <a href="https://github.com/lfazocar" target="_blank">
-      <Image src={githubLogo} alt="Github" />
+      <Image src={githubLogoDark} alt="Github" class="dark-mode" />
+      <Image src={githubLogoLight} alt="Github" class="light-mode" />
     </a>
     <a href="https://www.linkedin.com/in/lfazocar" target="_blank">
       <Image src={linkedinLogo} alt="LinkedIn" />
@@ -20,14 +24,54 @@ import picoLogo from "../images/pico-css-icon.png";
     <p>Made with</p>
     <div>
       <a href="https://astro.build/" target="_blank">
-        <Image src={astroLogo} alt="Astro" />
+        <Image src={astroLogoDark} alt="Astro" class="dark-mode" />
+        <Image src={astroLogoLight} alt="Astro" class="light-mode" />
       </a>
       <a href="https://picocss.com/" target="_blank">
-        <Image src={picoLogo} alt="PicoCSS" />
+        <Image src={picoLogoDark} alt="PicoCSS" class="dark-mode" />
+        <Image src={picoLogoLight} alt="PicoCSS" class="light-mode" />
       </a>
     </div>
   </div>
 </footer>
+<script>
+  const lightModeIcons = document.querySelectorAll(".light-mode");
+  const darkModeIcons = document.querySelectorAll(".dark-mode");
+
+  function toggleImageTheme(theme) {
+    if (theme === "dark") {
+      lightModeIcons.forEach((img) => {
+        img.classList.add("hidden");
+      });
+      darkModeIcons.forEach((img) => {
+        img.classList.remove("hidden");
+      });
+    } else {
+      darkModeIcons.forEach((img) => {
+        img.classList.add("hidden");
+      });
+      lightModeIcons.forEach((img) => {
+        img.classList.remove("hidden");
+      });
+    }
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "data-theme"
+      ) {
+        const newTheme = document.documentElement.getAttribute("data-theme");
+        toggleImageTheme(newTheme);
+      }
+    });
+  });
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+</script>
 <style>
   footer {
     display: flex;
@@ -59,5 +103,8 @@ import picoLogo from "../images/pico-css-icon.png";
     text-align: center;
     font-size: x-small;
     width: auto;
+  }
+  .hidden {
+    display: none;
   }
 </style>

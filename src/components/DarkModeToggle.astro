@@ -1,0 +1,44 @@
+<label
+  for="dark-mode"
+  data-tooltip="Dark/Light mode"
+  data-placement="bottom"
+  transition:persist
+>
+  <span id="toggle-text">🌛</span>
+  <input id="dark-mode" type="checkbox" role="switch" checked />
+</label>
+<script>
+  const darkModeToggle = document.getElementById("dark-mode");
+
+  function toggleTheme(theme) {
+    const isDarkMode = theme === "dark";
+    localStorage.setItem("theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+    document.getElementById("toggle-text").textContent = isDarkMode
+      ? "🌛"
+      : "🌞";
+    darkModeToggle.checked = isDarkMode;
+  }
+
+  function initializeTheme() {
+    const currentTheme = localStorage.getItem("theme") || "dark";
+    toggleTheme(currentTheme);
+  }
+
+  document.addEventListener("astro:after-swap", initializeTheme);
+  document.addEventListener("DOMContentLoaded", initializeTheme);
+
+  darkModeToggle.addEventListener("change", (event) => {
+    const newTheme = event.target.checked ? "dark" : "light";
+    toggleTheme(newTheme);
+  });
+</script>
+<style>
+  label {
+    align-content: center;
+    border-bottom: 0;
+  }
+  input {
+    margin-right: 0;
+  }
+</style>
