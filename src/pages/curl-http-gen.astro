@@ -54,135 +54,135 @@ import Page from "../layouts/Page.astro";
       <button id="to-clipboard" disabled>Copy to clipboard</button>
     </div>
   </div>
-  <script>
-    const headers = document.getElementById("headers");
-    const selectMethod = document.getElementById("method");
-    const data = document.getElementById("data");
-    const command = document.getElementById("command");
+</Page>
+<script>
+  const headers = document.getElementById("headers");
+  const selectMethod = document.getElementById("method");
+  const data = document.getElementById("data");
+  const command = document.getElementById("command");
 
-    // Disable add header button if there's an empty header input
-    headers.addEventListener("input", (event) => {
-      if (event.target.tagName === "INPUT") {
-        const inputs = Array.from(headers.querySelectorAll("input"));
-        const anyEmpty = inputs.some((input) => input.value.trim() === "");
-        if (anyEmpty) {
-          document.getElementById("add-header").setAttribute("disabled", "");
-        } else {
-          document.getElementById("add-header").removeAttribute("disabled");
-        }
-      }
-    });
-
-    // Disable data input if the method shouldn't have a body
-    selectMethod.addEventListener("change", (event) => {
-      const method = document.getElementById("method").value;
-      if (method === "POST" || method === "PUT" || method === "PATCH") {
-        data.removeAttribute("disabled");
-        data.placeholder = '{\n  "request":"body"\n}';
-      } else {
-        data.setAttribute("disabled", "");
-        data.placeholder = "This method shouldn't have a body";
-      }
-    });
-
-    // Dynamic textarea resizing
-    data.addEventListener("input", (event) => {
-      const textbox = event.target;
-      textbox.style.height = "auto";
-      textbox.style.height = textbox.scrollHeight + "px";
-    });
-
-    // "Add Header" button
-    document
-      .getElementById("add-header")
-      .addEventListener("click", function (event) {
-        const newHeaderInput = document.createElement("input");
-        newHeaderInput.placeholder = "Header-Name: Value";
-        headers.appendChild(newHeaderInput);
+  // Disable add header button if there's an empty header input
+  headers.addEventListener("input", (event) => {
+    if (event.target.tagName === "INPUT") {
+      const inputs = Array.from(headers.querySelectorAll("input"));
+      const anyEmpty = inputs.some((input) => input.value.trim() === "");
+      if (anyEmpty) {
         document.getElementById("add-header").setAttribute("disabled", "");
-      });
-
-    // Generate cURL command
-    document
-      .getElementById("curl-http-gen")
-      .addEventListener("submit", function (event) {
-        event.preventDefault();
-        const method = document.getElementById("method").value;
-        const url = document.getElementById("url").value;
-        const headerValues = Array.from(
-          headers.querySelectorAll("input"),
-          (input) => input.value,
-        ).filter((value) => value !== "");
-        const status = document.getElementById("status").checked;
-        const newline = document.getElementById("newline").checked;
-
-        let generated_command = "curl";
-        if (method !== "GET") generated_command += " -X " + method;
-        generated_command += " " + url;
-        headerValues.forEach((header) => {
-          generated_command += ` \\\n -H "${header}"`;
-        });
-        if (!data.hasAttribute("disabled") && data.value) {
-          generated_command += ` \\\n -d "${data.value}"`;
-        }
-        if (newline || status) {
-          generated_command += ' \\\n -w "';
-          if (status) generated_command += "\\n %{http_code}";
-          if (newline) generated_command += "\\n";
-          generated_command += '"';
-        }
-
-        command.value = generated_command;
-        command.style.height = "auto";
-        command.style.height = command.scrollHeight + "px";
-        document.getElementById("to-clipboard").removeAttribute("disabled");
-      });
-
-    // Copy cURL command to clipboard
-    document
-      .getElementById("to-clipboard")
-      .addEventListener("click", function (event) {
-        navigator.clipboard
-          .writeText(command.value)
-          .then(() => {
-            alert(`cURL command copied to the clipboard:\n${command.value}`);
-          })
-          .catch((err) => {
-            alert("Failed to copy to clipboard: ", err);
-          });
-      });
-  </script>
-  <style>
-    .grid {
-      margin-top: 1em;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
-      gap: 1em;
-      grid-auto-flow: dense;
-    }
-
-    @media (max-width: 576px) {
-      .grid {
-        grid-template-columns: 1fr;
+      } else {
+        document.getElementById("add-header").removeAttribute("disabled");
       }
     }
+  });
 
-    fieldset > div {
-      margin-bottom: 0;
+  // Disable data input if the method shouldn't have a body
+  selectMethod.addEventListener("change", (event) => {
+    const method = document.getElementById("method").value;
+    if (method === "POST" || method === "PUT" || method === "PATCH") {
+      data.removeAttribute("disabled");
+      data.placeholder = '{\n  "request":"body"\n}';
+    } else {
+      data.setAttribute("disabled", "");
+      data.placeholder = "This method shouldn't have a body";
     }
+  });
 
-    #method {
-      width: fit-content;
-    }
+  // Dynamic textarea resizing
+  data.addEventListener("input", (event) => {
+    const textbox = event.target;
+    textbox.style.height = "auto";
+    textbox.style.height = textbox.scrollHeight + "px";
+  });
 
-    button {
-      width: 100%;
-    }
+  // "Add Header" button
+  document
+    .getElementById("add-header")
+    .addEventListener("click", function (event) {
+      const newHeaderInput = document.createElement("input");
+      newHeaderInput.placeholder = "Header-Name: Value";
+      headers.appendChild(newHeaderInput);
+      document.getElementById("add-header").setAttribute("disabled", "");
+    });
 
-    textarea {
-      overflow-y: hidden;
-      resize: none;
-      font-family: monospace;
+  // Generate cURL command
+  document
+    .getElementById("curl-http-gen")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      const method = document.getElementById("method").value;
+      const url = document.getElementById("url").value;
+      const headerValues = Array.from(
+        headers.querySelectorAll("input"),
+        (input) => input.value,
+      ).filter((value) => value !== "");
+      const status = document.getElementById("status").checked;
+      const newline = document.getElementById("newline").checked;
+
+      let generated_command = "curl";
+      if (method !== "GET") generated_command += " -X " + method;
+      generated_command += " " + url;
+      headerValues.forEach((header) => {
+        generated_command += ` \\\n -H "${header}"`;
+      });
+      if (!data.hasAttribute("disabled") && data.value) {
+        generated_command += ` \\\n -d "${data.value}"`;
+      }
+      if (newline || status) {
+        generated_command += ' \\\n -w "';
+        if (status) generated_command += "\\n %{http_code}";
+        if (newline) generated_command += "\\n";
+        generated_command += '"';
+      }
+
+      command.value = generated_command;
+      command.style.height = "auto";
+      command.style.height = command.scrollHeight + "px";
+      document.getElementById("to-clipboard").removeAttribute("disabled");
+    });
+
+  // Copy cURL command to clipboard
+  document
+    .getElementById("to-clipboard")
+    .addEventListener("click", function (event) {
+      navigator.clipboard
+        .writeText(command.value)
+        .then(() => {
+          alert(`cURL command copied to the clipboard:\n${command.value}`);
+        })
+        .catch((err) => {
+          alert("Failed to copy to clipboard: ", err);
+        });
+    });
+</script>
+<style>
+  .grid {
+    margin-top: 1em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+    gap: 1em;
+    grid-auto-flow: dense;
+  }
+
+  @media (max-width: 576px) {
+    .grid {
+      grid-template-columns: 1fr;
     }
-  </style></Page
->
+  }
+
+  fieldset > div {
+    margin-bottom: 0;
+  }
+
+  #method {
+    width: fit-content;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  textarea {
+    overflow-y: hidden;
+    resize: none;
+    font-family: monospace;
+  }
+</style>

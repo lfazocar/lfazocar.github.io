@@ -1,12 +1,11 @@
 ---
 import "../styles/pico.violet.min.css";
-import { ViewTransitions } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 const { pageTitle } = Astro.props;
 ---
 
-<html lang="en" transition:animate="none">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -16,19 +15,33 @@ const { pageTitle } = Astro.props;
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<title>{pageTitle}</title>
-		<ViewTransitions />
 	</head>
 	<body>
 		<Header />
-		<main class="container" transition:animate="fade">
+		<main class="container">
 			<slot />
 		</main>
 		<Footer />
 	</body>
 </html>
-<script>
+<script is:inline>
 	(function () {
 		const theme = localStorage.getItem("theme") || "dark";
 		document.documentElement.setAttribute("data-theme", theme);
+
+		const isDarkMode = theme === "dark";
+		document.getElementById("dark-mode").checked = isDarkMode;
+		document.getElementById("toggle-text").textContent = isDarkMode
+			? "🌛"
+			: "🌞";
+
+		const lightModeIcons = document.querySelectorAll(".light-mode");
+		const darkModeIcons = document.querySelectorAll(".dark-mode");
+		lightModeIcons.forEach((img) => {
+			img.classList.toggle("hidden", isDarkMode);
+		});
+		darkModeIcons.forEach((img) => {
+			img.classList.toggle("hidden", !isDarkMode);
+		});
 	})();
 </script>

@@ -9,7 +9,7 @@ import astroLogoLight from "../images/astro-icon-light.png";
 import picoLogoLight from "../images/pico-icon-light.png";
 ---
 
-<footer class="container" transition:persist transition:animate="fade">
+<footer class="container">
   <div class="social">
     <p>Contact me:</p>
     <a href="https://github.com/lfazocar" target="_blank">
@@ -39,21 +39,13 @@ import picoLogoLight from "../images/pico-icon-light.png";
   const darkModeIcons = document.querySelectorAll(".dark-mode");
 
   function toggleImageTheme(theme) {
-    if (theme === "dark") {
-      lightModeIcons.forEach((img) => {
-        img.classList.add("hidden");
-      });
-      darkModeIcons.forEach((img) => {
-        img.classList.remove("hidden");
-      });
-    } else {
-      darkModeIcons.forEach((img) => {
-        img.classList.add("hidden");
-      });
-      lightModeIcons.forEach((img) => {
-        img.classList.remove("hidden");
-      });
-    }
+    const isDarkMode = theme === "dark"
+    lightModeIcons.forEach((img) => {
+			img.classList.toggle("hidden", isDarkMode);
+		});
+		darkModeIcons.forEach((img) => {
+			img.classList.toggle("hidden", !isDarkMode);
+		});
   }
 
   const observer = new MutationObserver((mutations) => {
