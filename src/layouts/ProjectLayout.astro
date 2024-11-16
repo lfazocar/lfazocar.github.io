@@ -1,38 +1,62 @@
 ---
-import '../styles/pico.violet.min.css'
-import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
-import Page from './Page.astro';
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import Page from "./Page.astro";
 
 const { frontmatter } = Astro.props;
-const images = import.meta.glob<{ default: ImageMetadata }>('/src/images/projects/*.{jpeg,jpg,png,gif,svg}');
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/images/projects/*.{jpeg,jpg,png,gif,svg}",
+);
 ---
+
 <Page pageTitle={frontmatter.name}>
   <h1>{frontmatter.name}</h1>
   {
-    frontmatter.image && frontmatter.address ?
+    frontmatter.image && frontmatter.address ? (
       <a href={frontmatter.address} target="_blank">
-        <Image src={images[frontmatter.image.url]()} alt={frontmatter.image.alt} loading="eager" />
+        <Image
+          src={images[frontmatter.image.url]()}
+          alt={frontmatter.image.alt}
+          loading="eager"
+        />
       </a>
-    : frontmatter.image &&
-      <Image src={images[frontmatter.image.url]()} alt={frontmatter.image.alt} loading="eager" />
+    ) : (
+      frontmatter.image && (
+        <Image
+          src={images[frontmatter.image.url]()}
+          alt={frontmatter.image.alt}
+          loading="eager"
+        />
+      )
+    )
   }
   <blockquote>{frontmatter.description}</blockquote>
   <a href="/projects" role="button">&lt; Go back</a>
   <slot />
   {
-    frontmatter.github &&
-      <p><a href={frontmatter.github} target="_blank">GitHub Repository</a></p>
+    frontmatter.github && (
+      <p>
+        <a href={frontmatter.github} target="_blank">
+          GitHub Repository
+        </a>
+      </p>
+    )
   }
   {
-    frontmatter.address &&
-      <p>URL: <a href={frontmatter.address} target="_blank">{frontmatter.address}</a></p>
+    frontmatter.address && (
+      <p>
+        URL:{" "}
+        <a href={frontmatter.address} target="_blank">
+          {frontmatter.address}
+        </a>
+      </p>
+    )
   }
 </Page>
 <style>
   img {
     display: block;
-    margin:0 auto 1em;
+    margin: 0 auto 1em;
     border-radius: 10px;
   }
 </style>
