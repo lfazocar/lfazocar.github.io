@@ -2,7 +2,7 @@
 import Page from "../layouts/Page.astro";
 ---
 
-<Page pageTitle="cURL HTTP tool">
+<Page pageTitle="cURL HTTP Tool">
   <h1>cURL HTTP command generator</h1>
   <div class="grid">
     <form id="curl-http-gen">
@@ -83,6 +83,39 @@ import Page from "../layouts/Page.astro";
     } else {
       data.setAttribute("disabled", "");
       data.placeholder = "This method shouldn't have a body";
+    }
+  });
+
+  // Use Tab and Shift + Tab for indentation
+  function precisionReplace(string, index, replacement, length = 1) {
+    return string.slice(0, index) + replacement + string.slice(index + length);
+  }
+
+  data.addEventListener("keydown", (keypress) => {
+    if (keypress.key === "Tab") {
+      keypress.preventDefault();
+      const cursor = data.selectionStart;
+      const text = data.value;
+
+      if (keypress.shiftKey) {
+        if (!text) return;
+
+        const lineStart = text.lastIndexOf("\n", cursor) + 1;
+        const firstTwoChars = text.slice(lineStart, lineStart + 2);
+        let indent = 0;
+        while (firstTwoChars[indent] === " ") {
+          indent++;
+        }
+        if (indent) {
+          data.value = precisionReplace(text, lineStart, "", indent);
+          const newCursor =
+            cursor - indent < lineStart ? lineStart : cursor - indent;
+          data.setSelectionRange(newCursor, newCursor);
+        }
+      } else {
+        data.value = precisionReplace(text, cursor, "  ", 0);
+        data.setSelectionRange(cursor + 2, cursor + 2);
+      }
     }
   });
 

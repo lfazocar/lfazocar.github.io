@@ -1,0 +1,251 @@
+---
+import Page from "../layouts/Page.astro";
+---
+
+<Page pageTitle="JSON Tree Viewer">
+  <h1>JSON Tree Viewer</h1>
+  <div>
+    <h3>Input</h3>
+    <textarea
+      id="json-data"
+      placeholder='{\n  "key": "value"\n  "array": [\n    {\n      "id": 1,\n      "name": "one"\n    },\n    {\n      "id": 2,\n      "name": "two"\n    }\n  ]\n}'
+      rows="13"></textarea>
+    <button id="build" disabled>Build</button>
+  </div>
+  <div>
+    <h3>Output</h3>
+    <div class="treeview-controls">
+      <label>
+        <input id="toggle-closing" type="checkbox" role="switch" />
+        Hide closing brackets?
+      </label>
+      <div role="group">
+        <button id="expand-all" disabled>Expand all</button>
+        <button id="collapse-all" class="secondary" disabled
+          >Collapse all</button
+        >
+      </div>
+    </div>
+    <details id="json-treeview">
+      <summary>Your JSON will be here!</summary>
+    </details>
+  </div>
+</Page>
+<script>
+  const jsonData = document.getElementById("json-data");
+  const buildButton = document.getElementById("build");
+  const toggleClosing = document.getElementById("toggle-closing");
+  const expandAll = document.getElementById("expand-all");
+  const collapseAll = document.getElementById("collapse-all");
+  let jsonTreeview = document.getElementById("json-treeview");
+  let closingBrackets = null;
+  let allDetails = null;
+
+  // Use Tab and Shift + Tab for indentation
+  function precisionReplace(string, index, replacement, length = 1) {
+    return string.slice(0, index) + replacement + string.slice(index + length);
+  }
+
+  jsonData.addEventListener("keydown", (keypress) => {
+    if (keypress.key === "Tab") {
+      keypress.preventDefault();
+      const cursor = jsonData.selectionStart;
+      const text = jsonData.value;
+
+      if (keypress.shiftKey) {
+        if (!text) return;
+
+        const lineStart = text.lastIndexOf("\n", cursor) + 1;
+        const firstTwoChars = text.slice(lineStart, lineStart + 2);
+        let indent = 0;
+        while (firstTwoChars[indent] === " ") {
+          indent++;
+        }
+        if (indent) {
+          jsonData.value = precisionReplace(text, lineStart, "", indent);
+          const newCursor =
+            cursor - indent < lineStart ? lineStart : cursor - indent;
+          jsonData.setSelectionRange(newCursor, newCursor);
+        }
+      } else {
+        jsonData.value = precisionReplace(text, cursor, "  ", 0);
+        jsonData.setSelectionRange(cursor + 2, cursor + 2);
+      }
+    }
+  });
+
+  // Dynamic textarea resizing
+  jsonData.addEventListener("input", (event) => {
+    const textbox = event.target;
+    textbox.style.height = "auto";
+    textbox.style.height = textbox.scrollHeight + "px";
+  });
+
+  // Build JSON treeview
+  function buildJsonTreeview(json, parentInfo) {
+    const wrapper = document.createElement("details");
+    wrapper.setAttribute("open", "");
+    const closingBracket = document.createElement("p");
+    const list = document.createElement("ul");
+
+    if (parentInfo) {
+      closingBracket.textContent = Array.isArray(json) ? "]" : "}";
+      wrapper.appendChild(parentInfo);
+    } else {
+      const openingBracket = document.createElement("summary");
+      if (Array.isArray(json)) {
+        openingBracket.innerHTML = "[ <small><i>(array)</i></small>";
+        closingBracket.textContent = "]";
+      } else {
+        openingBracket.innerHTML = "{ <small><i>(object)</i></small>";
+        closingBracket.textContent = "}";
+      }
+      wrapper.appendChild(openingBracket);
+    }
+
+    for (let key in json) {
+      const listItem = document.createElement("li");
+      if (typeof json[key] !== "object" || json[key] == null) {
+        const itemType = ` <small><i>(${typeof json[key]})</i><small>`;
+        listItem.textContent = Array.isArray(json)
+          ? json[key]
+          : `${key}: ${json[key]}`;
+        listItem.innerHTML += itemType;
+      } else {
+        const itemInfo = document.createElement("summary");
+        if (!Array.isArray(json)) {
+          itemInfo.textContent = `${key}: `;
+        }
+        itemInfo.innerHTML += Array.isArray(json[key])
+          ? "[ <small><i>(array)</i></small>"
+          : "{ <small><i>(object)</i></small>";
+        listItem.appendChild(buildJsonTreeview(json[key], itemInfo));
+      }
+      list.appendChild(listItem);
+    }
+
+    wrapper.appendChild(list);
+    wrapper.appendChild(closingBracket);
+    return wrapper;
+  }
+
+  // Disable button if Input is empty
+  jsonData.addEventListener("input", (event) => {
+    if (jsonData.value) {
+      buildButton.removeAttribute("disabled");
+    } else {
+      buildButton.setAttribute("disabled", "");
+    }
+  });
+
+  // Build treeview button
+  buildButton.addEventListener("click", (event) => {
+    let data = {};
+    try {
+      data = JSON.parse(jsonData.value);
+    } catch (error) {
+      alert("Invalid JSON input.");
+      return;
+    }
+    const newTreeview = buildJsonTreeview(data);
+    newTreeview.setAttribute("id", "json-treeview");
+    jsonTreeview.replaceWith(newTreeview);
+    jsonTreeview = document.getElementById("json-treeview");
+    buildButton.setAttribute("disabled", "");
+    expandAll.removeAttribute("disabled");
+    collapseAll.removeAttribute("disabled");
+    closingBrackets = jsonTreeview.getElementsByTagName("p");
+    listToggleHidden(closingBrackets, toggleClosing.checked);
+    jsonTreeview.previousElementSibling.scrollIntoView({ behavior: "smooth" });
+    allDetails = null;
+  });
+
+  // Toggle closing brackets
+  function listToggleHidden(elementList, isHidden) {
+    for (const element of elementList) {
+      element.classList.toggle("hidden", isHidden);
+    }
+  }
+  toggleClosing.addEventListener("change", (event) => {
+    if (closingBrackets) {
+      listToggleHidden(closingBrackets, event.target.checked);
+    }
+  });
+
+  // Open and Close all JSON objects
+  expandAll.addEventListener("click", (event) => {
+    allDetails = allDetails || jsonTreeview.getElementsByTagName("details");
+    for (const details of allDetails) {
+      details.setAttribute("open", "");
+    }
+    jsonTreeview.setAttribute("open", "");
+  });
+  collapseAll.addEventListener("click", (event) => {
+    allDetails = allDetails || jsonTreeview.getElementsByTagName("details");
+    for (const details of allDetails) {
+      details.removeAttribute("open");
+    }
+    jsonTreeview.removeAttribute("open");
+  });
+</script>
+<style>
+  textarea {
+    overflow-y: hidden;
+    resize: none;
+    font-family: monospace;
+  }
+  #build {
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  .treeview-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 1rem;
+  }
+  .treeview-controls * {
+    margin-bottom: 0;
+  }
+  div[role="group"] {
+    width: auto;
+  }
+  :global(#json-treeview) {
+    font-family: monospace;
+    border: 1px #7540bf solid;
+    padding: 0.25rem 0.5em 0.25rem 0;
+  }
+  :global(#json-treeview[open]) {
+    padding-bottom: 0;
+  }
+  :global(#json-treeview details[open]) {
+    border-top: 1px #7540bf dashed;
+    border-left: 1px #7540bf dashed;
+    border-bottom: 1px #7540bf dashed;
+    padding-top: 0.25rem;
+  }
+  :global(
+      #json-treeview details[open] > summary,
+      #json-treeview[open] > summary
+    ) {
+    margin-bottom: 0.25rem;
+  }
+  :global(#json-treeview summary::after) {
+    float: left;
+  }
+  :global(#json-treeview ul) {
+    margin-bottom: 0.25rem;
+    margin-left: 0.5em;
+  }
+  :global(#json-treeview li:has(details)) {
+    list-style: none;
+  }
+  :global(#json-treeview li > details) {
+    margin-left: -2em;
+    margin-bottom: 0;
+  }
+  :global(#json-treeview p) {
+    margin-left: 0.5em;
+    margin-bottom: 0.25rem;
+  }
+</style>
