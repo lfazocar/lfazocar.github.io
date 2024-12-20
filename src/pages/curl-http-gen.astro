@@ -157,7 +157,7 @@ import Page from "../layouts/Page.astro";
         generated_command += ` \\\n -H "${header}"`;
       });
       if (!data.hasAttribute("disabled") && data.value) {
-        generated_command += ` \\\n -d "${data.value}"`;
+        generated_command += ` \\\n -d "${data.value.replaceAll('"', '\\"')}"`;
       }
       if (newline || status) {
         generated_command += ' \\\n -w "';
