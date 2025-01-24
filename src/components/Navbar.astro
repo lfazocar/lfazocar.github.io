@@ -6,8 +6,16 @@ import DarkModeToggle from "./DarkModeToggle.astro";
   <ul>
     <li><a href="/">Home</a></li>
     <li><a href="/projects/">Projects</a></li>
-    <li><a href="/curl-http-gen/">cURL HTTP Tool</a></li>
-    <li><a href="/json-tree-viewer/">JSON Tree viewer</a></li>
+    <li><a href="/about/">About</a></li>
+    <li>
+      <details class="dropdown">
+        <summary role="button" class="outline">Tools</summary>
+        <ul>
+          <li><a href="/curl-http-gen/">cURL HTTP Tool</a></li>
+          <li><a href="/json-tree-viewer/">JSON Tree Viewer</a></li>
+        </ul>
+      </details>
+    </li>
   </ul>
   <DarkModeToggle />
 </nav>
